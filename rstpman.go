@@ -36,9 +36,15 @@ func main() {
 	oids := []string{"1.3.6.1.2.1.17.2.15.1.3", "1.3.6.1.2.1.2.2.1.2"}
 
 	for {
-		clearCmd := exec.Command("clear")
-		clearCmd.Stdout = os.Stdout
-		clearCmd.Run()
+		clearScreen()
+
+		now := time.Now()
+
+		fmt.Printf("Fetched from %s at %d-%02d-%02d %02d:%02d:%02d\n\n",
+			target.Target,
+			now.Year(), now.Month(), now.Day(),
+			now.Hour(), now.Minute(), now.Second(),
+		)
 		err = target.BulkWalk(oids[0], printValue)
 		if err != nil {
 			log.Fatal(err)
@@ -66,4 +72,10 @@ func printValue(pdu snmp.SnmpPDU) error {
 	}
 
 	return nil
+}
+
+func clearScreen() {
+	clearCmd := exec.Command("clear")
+	clearCmd.Stdout = os.Stdout
+	clearCmd.Run()
 }
