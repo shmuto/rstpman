@@ -4,12 +4,18 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"time"
 
 	snmp "github.com/soniah/gosnmp"
 )
 
 func main() {
+
+	if len(os.Args) != 3 {
+		fmt.Println("Usage: rstpman <ip> <community>")
+		return 
+	}
 
 	target := &snmp.GoSNMP{
 		Target:    os.Args[1],
@@ -30,11 +36,14 @@ func main() {
 	oids := []string{"1.3.6.1.2.1.17.2.15.1.3", "1.3.6.1.2.1.2.2.1.2"}
 
 	for {
+		clearCmd := exec.Command("clear")
+		clearCmd.Stdout = os.Stdout
+		clearCmd.Run()
 		err = target.BulkWalk(oids[0], printValue)
 		if err != nil {
 			log.Fatal(err)
 		}
-		time.Sleep(1 * time.Second)		
+		time.Sleep(1 * time.Second)
 	}
 }
 
