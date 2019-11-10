@@ -32,25 +32,51 @@ func main() {
 	defer target.Conn.Close()
 
 	// dot1dStpPortState ... 1.3.6.1.2.1.17.2.15.1.3
-	// ifDescr           ... 1.3.6.1.2.1.2.2.1.2
 	oids := []string{"1.3.6.1.2.1.17.2.15.1.3", "1.3.6.1.2.1.2.2.1.2"}
 
 	for {
 		clearScreen()
 
 		now := time.Now()
-
 		fmt.Printf("Fetched from %s at %d-%02d-%02d %02d:%02d:%02d\n\n",
 			target.Target,
 			now.Year(), now.Month(), now.Day(),
 			now.Hour(), now.Minute(), now.Second(),
 		)
+
+		ifList, err := getInterfaces(target)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+
+
 		err = target.BulkWalk(oids[0], printValue)
 		if err != nil {
 			log.Fatal(err)
 		}
 		time.Sleep(1 * time.Second)
 	}
+}
+
+func getInterfaces(target *snmp.GoSNMP) (map[string]int, error) {
+	ifIndexMap := map[string]int{}
+
+	// dot1dBasePortIfIndex ... 1.3.6.1.2.1.17.1.4.1.2
+	err := target.BulkWalk("1.3.6.1.2.1.17.1.4.1.2", func (pdu snmp.SnmpPDU) error {
+		ifIndexMap[pdu.Name[24:]] = pdu.Value.(int)
+
+		return nil
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//ifName ... 1.3.6.1.2.1.31.1.1.1.1 
+	err := target.BulkWalk("1.3.6.1.2.1.31.1.1.1.1", func (pdu snmp.SnmpPDU) error {
+
+	})
+	return ifIndex, nil 
 }
 
 func printValue(pdu snmp.SnmpPDU) error {
