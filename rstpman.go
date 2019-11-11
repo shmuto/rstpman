@@ -7,6 +7,8 @@ import (
 	"os/exec"
 	"strconv"
 	"time"
+	"runtime"
+	"errors"
 
 	snmp "github.com/soniah/gosnmp"
 )
@@ -33,7 +35,10 @@ func main() {
 	defer target.Conn.Close()
 
 	for {
-		clearScreen()
+		err = clearScreen()
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		now := time.Now()
 		fmt.Printf("Fetched from %s at %d-%02d-%02d %02d:%02d:%02d\n\n",
@@ -102,8 +107,23 @@ func getInterfaces(target *snmp.GoSNMP) (map[string]string, error) {
 	return ifIndexMap, err
 }
 
-func clearScreen() {
-	clearCmd := exec.Command("clear")
+func clearScreen() error {
+	var clearCmd *exec.Cmd
+
+	if runtime.GOOS == "windows" {
+		clearCmd = exec.Command("cmd", "cls")
+	} else if runtime.GOOS == "linux" {
+		clearCmd = exec.Command("clear")
+	} else if runtime.GOOS == "darwin" {
+		clearCmd = exec.Command("clear")
+	} else {
+		return cantDetectOSTypeError()
+	}
 	clearCmd.Stdout = os.Stdout
 	clearCmd.Run()
+	return nil
+}
+
+func cantDetectOSTypeError() error {
+	return errors.New("can't detect OS type")
 }
