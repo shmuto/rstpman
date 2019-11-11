@@ -111,7 +111,7 @@ func clearScreen() error {
 	var clearCmd *exec.Cmd
 
 	if runtime.GOOS == "windows" {
-		clearCmd = exec.Command("cmd", "cls")
+		clearCmd = exec.Command("cls")
 	} else if runtime.GOOS == "linux" {
 		clearCmd = exec.Command("clear")
 	} else if runtime.GOOS == "darwin" {
