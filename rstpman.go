@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"time"
 	"strconv"
+	"time"
 
 	snmp "github.com/soniah/gosnmp"
 )
@@ -15,7 +15,7 @@ func main() {
 
 	if len(os.Args) != 3 {
 		fmt.Println("Usage: rstpman <ip> <community>")
-		return 
+		return
 	}
 
 	target := &snmp.GoSNMP{
@@ -80,7 +80,7 @@ func getInterfaces(target *snmp.GoSNMP) (map[string]string, error) {
 
 	// Get mapping ifIndex from BRIDGE-MIB to IF-MIB
 	// dot1dBasePortIfIndex ... 1.3.6.1.2.1.17.1.4.1.2
-	err := target.BulkWalk("1.3.6.1.2.1.17.1.4.1.2", func (pdu snmp.SnmpPDU) error {
+	err := target.BulkWalk("1.3.6.1.2.1.17.1.4.1.2", func(pdu snmp.SnmpPDU) error {
 		ifIndexMap[pdu.Name[24:]] = strconv.Itoa(pdu.Value.(int))
 		return nil
 	})
@@ -89,8 +89,8 @@ func getInterfaces(target *snmp.GoSNMP) (map[string]string, error) {
 	}
 
 	// Create map from dot1dStpPortState etnry to ifName
-	//ifName ... 1.3.6.1.2.1.31.1.1.1.1 
-	err = target.BulkWalk("1.3.6.1.2.1.31.1.1.1.1", func (pdu snmp.SnmpPDU) error {
+	//ifName ... 1.3.6.1.2.1.31.1.1.1.1
+	err = target.BulkWalk("1.3.6.1.2.1.31.1.1.1.1", func(pdu snmp.SnmpPDU) error {
 		for k, v := range ifIndexMap {
 			if v == pdu.Name[24:] {
 				ifIndexMap[k] = string(pdu.Value.([]uint8))
