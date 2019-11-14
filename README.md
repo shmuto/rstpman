@@ -1,7 +1,7 @@
 # rstpman
 
 ```
-$ rstpman <ip/hostname> <snmp community>
+$ rstpman <ip> <snmp community>
 ```
 
 ![](rstpman.gif)
