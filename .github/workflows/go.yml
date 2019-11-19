@@ -18,6 +18,7 @@ jobs:
 
     - name: Get dependencies
       run: |
+        export GOPATH=`pwd`
         export GOBIN=$GOPATH/bin
         echo $GOBIN
         go get -v -t -d ./...
