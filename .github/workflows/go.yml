@@ -18,7 +18,8 @@ jobs:
 
     - name: Get dependencies
       run: |
-        export GOPATH=`pwd`
+        export GOPATH=/home/runner/work/
+        ls "$GOPATH"
         export GOBIN=$GOPATH/bin
         export PATH=$PATH:$GOBIN
         mkdir -p "$GOBIN"
