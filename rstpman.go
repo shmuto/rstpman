@@ -94,7 +94,7 @@ func getInterfaces(target *snmp.GoSNMP) (map[string]string, error) {
 	}
 
 	// Create map from dot1dStpPortState etnry to ifName
-	//ifName ... 1.3.6.1.2.1.31.1.1.1.1
+	// ifName ... 1.3.6.1.2.1.31.1.1.1.1
 	err = target.BulkWalk("1.3.6.1.2.1.31.1.1.1.1", func(pdu snmp.SnmpPDU) error {
 		for k, v := range ifIndexMap {
 			if v == pdu.Name[24:] {
