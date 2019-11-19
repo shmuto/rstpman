@@ -18,6 +18,7 @@ jobs:
 
     - name: Get dependencies
       run: |
+        apt install go-dep
         export GOPATH=`pwd`
         export GOBIN=$GOPATH/bin
         mkdir -p "$GOBIN"
