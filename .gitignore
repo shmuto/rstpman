@@ -1,3 +1,4 @@
 rstpman
-rstpman.exe
+*.exe
+
 vendor/
