@@ -54,7 +54,7 @@ func main() {
 
 		// dot1dStpPortState ... 1.3.6.1.2.1.17.2.15.1.3
 		err = target.BulkWalk("1.3.6.1.2.1.17.2.15.1.3", func(pdu snmp.SnmpPDU) error {
-			fmt.Printf("%10v = ", ifIndexMap[pdu.Name[25:]])
+			fmt.Printf("%-10v = ", ifIndexMap[pdu.Name[25:]])
 
 			switch pdu.Value {
 			case 1:
