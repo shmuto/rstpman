@@ -18,9 +18,9 @@ jobs:
 
     - name: Get dependencies
       run: |
-        apt install go-dep
         export GOPATH=`pwd`
         export GOBIN=$GOPATH/bin
+        export PATH=$PATH:$GOBIN
         mkdir -p "$GOBIN"
         go get -v -t -d ./...
         if [ -f Gopkg.toml ]; then
