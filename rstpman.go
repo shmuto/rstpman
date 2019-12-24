@@ -61,6 +61,30 @@ func main() {
 			log.Fatal(err)
 		}
 
+		portStatus := ""
+		// dot1dStpPortState ... 1.3.6.1.2.1.17.2.15.1.3
+		err = target.BulkWalk("1.3.6.1.2.1.17.2.15.1.3", func(pdu snmp.SnmpPDU) error {
+			// export ifIndex from pdu
+			portStatus += fmt.Sprintf("%-10v = ", ifIndexMap[pdu.Name[25:]])
+
+			switch pdu.Value {
+			case 1:
+				portStatus += "disabled\n"
+			case 2:
+				portStatus += "blocking\n"
+			case 3:
+				portStatus += "listening\n"
+			case 4:
+				portStatus += "learning\n"
+			case 5:
+				portStatus += "forwarding\n"
+			case 6:
+				portStatus += "broken^n"
+			}
+
+			return nil
+		})
+
 		now := time.Now()
 		fmt.Printf("Fetched from %s at %d-%02d-%02d %02d:%02d:%02d\n\n",
 			target.Target,
@@ -68,27 +92,8 @@ func main() {
 			now.Hour(), now.Minute(), now.Second(),
 		)
 
-		// dot1dStpPortState ... 1.3.6.1.2.1.17.2.15.1.3
-		err = target.BulkWalk("1.3.6.1.2.1.17.2.15.1.3", func(pdu snmp.SnmpPDU) error {
-			fmt.Printf("%-10v = ", ifIndexMap[pdu.Name[25:]])
+		fmt.Println(portStatus)
 
-			switch pdu.Value {
-			case 1:
-				fmt.Println("disabled")
-			case 2:
-				fmt.Println("blocking")
-			case 3:
-				fmt.Println("listening")
-			case 4:
-				fmt.Println("learning")
-			case 5:
-				fmt.Println("forwarding")
-			case 6:
-				fmt.Println("broken")
-			}
-
-			return nil
-		})
 		if err != nil {
 			log.Fatal(err)
 		}
