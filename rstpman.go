@@ -14,21 +14,36 @@ import (
 )
 
 func main() {
+	var ip string = "127.0.0.1"
+	var community string = "public"
+	var interval int = 3
+	var err error
 
-	if len(os.Args) != 3 {
-		fmt.Println("Usage: rstpman <ip> <community>")
+	if len(os.Args) == 3 {
+		ip = os.Args[1]
+		community = os.Args[2]
+	} else if len(os.Args) == 4 {
+		ip = os.Args[1]
+		community = os.Args[2]
+		interval,err = strconv.Atoi(os.Args[3])
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+
+		fmt.Println("Usage: rstpman <ip> <community> <interval>")
 		return
 	}
 
 	target := &snmp.GoSNMP{
-		Target:    os.Args[1],
-		Community: os.Args[2],
+		Target:    ip,
+		Community: community, 
 		Port:      161,
 		Version:   snmp.Version2c,
 		Timeout:   time.Duration(1) * time.Second,
 	}
 
-	err := target.Connect()
+	err = target.Connect()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -76,7 +91,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		time.Sleep(2 * time.Second)
+		time.Sleep(time.Duration(interval) * time.Second)
 	}
 }
 
