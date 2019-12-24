@@ -1,14 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"time"
-	"runtime"
-	"errors"
 
 	snmp "github.com/soniah/gosnmp"
 )
@@ -25,7 +25,7 @@ func main() {
 	} else if len(os.Args) == 4 {
 		ip = os.Args[1]
 		community = os.Args[2]
-		interval,err = strconv.Atoi(os.Args[3])
+		interval, err = strconv.Atoi(os.Args[3])
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -54,7 +54,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-
 	for {
 		err = clearScreen()
 		if err != nil {
@@ -79,7 +78,7 @@ func main() {
 			case 5:
 				portStatus += "forwarding\n"
 			case 6:
-				portStatus += "broken^n"
+				portStatus += "broken\n"
 			}
 
 			return nil
