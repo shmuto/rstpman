@@ -37,7 +37,7 @@ func main() {
 
 	target := &snmp.GoSNMP{
 		Target:    ip,
-		Community: community, 
+		Community: community,
 		Port:      161,
 		Version:   snmp.Version2c,
 		Timeout:   time.Duration(1) * time.Second,
@@ -48,6 +48,12 @@ func main() {
 		log.Fatal(err)
 	}
 	defer target.Conn.Close()
+
+	ifIndexMap, err := getInterfaces(target)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 
 	for {
 		err = clearScreen()
@@ -61,11 +67,6 @@ func main() {
 			now.Year(), now.Month(), now.Day(),
 			now.Hour(), now.Minute(), now.Second(),
 		)
-
-		ifIndexMap, err := getInterfaces(target)
-		if err != nil {
-			log.Fatal(err)
-		}
 
 		// dot1dStpPortState ... 1.3.6.1.2.1.17.2.15.1.3
 		err = target.BulkWalk("1.3.6.1.2.1.17.2.15.1.3", func(pdu snmp.SnmpPDU) error {
